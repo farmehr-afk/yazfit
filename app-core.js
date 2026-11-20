@@ -27,6 +27,35 @@ function isPro(){
   if(S.sub.tier!=='free')return true;
   return !!(S.sub.trialEnd&&Date.now()<S.sub.trialEnd);
 }
+/* ---------- landing (marketing home) ---------- */
+function showLanding(){
+  document.body.classList.add('landing-on');
+  el('#landing').hidden=false;
+  buildLandingTiers();
+  window.scrollTo(0,0);
+}
+function enterApp(){
+  document.body.classList.remove('landing-on');
+  const l=el('#landing'); if(l)l.hidden=true;
+  el('#app').classList.add('on');
+  render();
+}
+function buildLandingTiers(){
+  const box=el('#landing-tiers'); if(!box)return;
+  box.innerHTML=FD.PLANS.map(p=>{
+    const cur=isPro()&&S.sub.tier===p.id;
+    const price=p.pm===0?'$0':('$'+p.pm+'<small>/mo</small>');
+    const cta=p.id==='free'
+      ?`<button class="btn wide ghost" data-act="start-journey">Start Free</button>`
+      :`<button class="btn wide ${p.pop?'accent':'primary'}" data-act="plan-pick" data-plan="${p.id}" ${cur?'disabled':''}>${cur?'✓ Current plan':'Choose '+p.name}</button>`;
+    return `<div class="tier ${p.pop?'pop':''}">${p.pop?'<div class="popb">MOST POPULAR</div>':''}
+      <h4>${p.name}</h4>
+      <div class="price">${price}</div>
+      <div class="tiny muted">${p.pm===0?'Free forever':billing==='yearly'?('$'+p.py+'/yr'):('$'+(p.py/12).toFixed(2)+'/mo billed yearly · save '+Math.round((1-p.py/(p.pm*12))*100)+'%')}</div>
+      <ul>${p.inc.map(f=>`<li>${f}</li>`).join('')}${p.exc.map(f=>`<li class="no">${f}</li>`).join('')}</ul>
+      ${cta}</div>`;
+  }).join('');
+}
 function computePlan(){
   const mm=FP.metrics(S.user,S.goal);
   if(S.adjust&&S.adjust.delta){
@@ -71,6 +100,7 @@ function render(){
   el('#sidepro').innerHTML=isPro()
     ?`<div class="tiny muted" style="padding:4px 6px">${S.sub.tier==='elite'?'💎 Elite active':'⚡ Plus active'} — thanks for supporting YazFit.</div>`
     :`<div class="tiny" style="padding:4px 6px"><b>⚡ Go Pro</b><br><span class="muted">Full programs, meal plans, reminders, AI coach — from $9.99/mo.</span><br><button class="btn sm accent" style="margin-top:8px;width:100%" data-act="open-paywall">See plans</button></div>`;
+  if(document.body.classList.contains('landing-on'))buildLandingTiers();
 }
 function showTab(tab){S.ui.tab=tab;save();render();window.scrollTo({top:0});}
 function rerender(){render();}
@@ -266,8 +296,7 @@ function obBuild(){
   S.onboarded=true;S.adjust=null;S.mpSeed=0;
   computePlan();
   obClose();
-  el('#app').classList.add('on');
-  render();
+  enterApp();
   // trial offer
   openModal(`<div class="mhead"><h2>🎉 Your plan is ready, ${esc(S.user.name)}!</h2><button class="x" data-act="modal-close">✕</button></div>
     <div class="row small" style="margin:10px 0">
@@ -293,7 +322,7 @@ function loadDemo(){
   S.goal={type:'lose',days:4,rate:1.25,targetKg:FP.lbToKg(187)};
   S.onboarded=true;S.adjust=null;
   computePlan();obClose();
-  el('#app').classList.add('on');render();
+  enterApp();
   toast('Demo profile loaded — John, 212 lb, fat-loss goal. Explore freely!','⚡');
 }
 
@@ -529,6 +558,20 @@ const ACT={
   },
   'reset-confirm'(){localStorage.removeItem(LSKEY);location.reload();},
   'modal-close'(){closeModal();},
+  /* landing — instant scroll: smooth/rAF animations freeze in background tabs */
+  'landing-nav'(el_){const t=el('#l-'+el_.dataset.sec);if(t)t.scrollIntoView({block:'start'});},
+  'landing-top'(){window.scrollTo(0,0);},
+  'open-landing'(){showLanding();},
+  'start-journey'(){
+    if(S.onboarded&&S.plan){enterApp();}
+    else{obShow();}
+  },
+  'contact-send'(){
+    const n=el('#lc-name'),m=el('#lc-msg');
+    if(!m||!m.value.trim()){toast('Write a short message first.','✍️');return;}
+    if(m.form)m.form.reset();
+    toast('Thanks '+(n&&n.value.trim()?esc(n.value.trim()):'')+'! We reply within 24 hours.','📩');
+  },
   /* onboarding */
   'ob-next'(){obNext();},
   'ob-back'(){obBack();},
@@ -587,8 +630,7 @@ function init(){
     el('#app').classList.add('on');
     render();
   } else {
-    el('#app').classList.add('on');
-    obShow();
+    showLanding();
   }
   if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
     navigator.serviceWorker.register('sw.js').catch(()=>{});

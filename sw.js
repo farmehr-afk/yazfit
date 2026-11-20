@@ -1,6 +1,6 @@
 /* YazFit service worker — offline cache + notification focus */
 'use strict';
-const CACHE='yazfit-v1';
+const CACHE='yazfit-v2';
 const ASSETS=[
   './','./index.html','./styles.css','./data.js','./engine.js',
   './app-views.js','./app-core.js','./manifest.json',

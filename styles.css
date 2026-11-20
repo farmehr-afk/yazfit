@@ -258,3 +258,76 @@ input.in:focus,select.in:focus{border-color:var(--primary);outline:none}
   body::before{content:none}
   .card,.daycard{border:1px solid #bbb;page-break-inside:avoid}
 }
+
+/* ============================================================
+   Landing — marketing home rebuilt from the YazFit banner
+   ============================================================ */
+body.landing-on #app{display:none}
+#landing{min-height:100vh;background:var(--bg);color:var(--text)}
+body.landing-on::before{opacity:.35}
+
+/* nav */
+.lnav{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.lnav-in{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:14px;padding:12px 20px}
+.lbrand{display:flex;align-items:center;gap:10px;background:none;border:none;font-weight:800;font-size:1.15rem;letter-spacing:.2px}
+.lbrand-t b,.lw+.lc,.ltag b,.lsec h2 b{color:var(--primary2)}
+.lbrand .logo{width:36px;height:36px;font-size:1.1rem}
+.llinks{display:flex;gap:2px;margin-left:14px;overflow-x:auto;scrollbar-width:none}
+.llinks::-webkit-scrollbar{display:none}
+.llink{background:none;border:none;color:var(--muted);font-weight:600;font-size:.9rem;padding:9px 13px;border-radius:10px;white-space:nowrap;position:relative}
+.llink:hover{color:var(--text)}
+.llink.on{color:var(--text)}
+.llink.on::after{content:"";position:absolute;left:13px;right:13px;bottom:4px;height:2px;border-radius:2px;background:var(--primary)}
+.lcta{margin-left:auto;white-space:nowrap}
+
+/* hero — banner composition: text left, athlete right */
+.lhero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.lhero-in{position:relative;max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:5fr 6fr;min-height:620px}
+.lhero-txt{display:flex;flex-direction:column;justify-content:center;padding:64px 44px;z-index:2}
+.lhero-txt h1{font-size:clamp(3.4rem,8vw,5.6rem);line-height:.95;letter-spacing:-2px;font-weight:800}
+.lw{color:#fff}
+.lc{color:var(--primary)}
+.ltag{font-size:clamp(1.7rem,3.4vw,2.7rem);font-weight:300;line-height:1.15;color:#f4eded;margin:14px 0 16px}
+.ltag b{font-weight:800}
+.lsub{color:var(--muted);font-size:1.05rem;line-height:1.5;margin-bottom:26px}
+.lcta-big{align-self:flex-start;font-size:1rem;padding:14px 26px;border-radius:999px}
+.lfeat{display:flex;gap:30px;margin-top:38px}
+.lfeat-i{display:flex;flex-direction:column;align-items:center;gap:9px;font-size:.7rem;font-weight:700;color:var(--muted);text-align:center;line-height:1.35}
+.lfeat-i .em{width:54px;height:54px;border:1.5px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:1.35rem;background:rgba(23,17,20,.55)}
+.lhero-img{position:relative;background:url("assets/hero-bg.jpg") center 18%/cover no-repeat;min-height:420px}
+.lhero-img::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(11,15,20,0) 22%),linear-gradient(0deg,rgba(11,15,20,.55) 0%,rgba(11,15,20,0) 30%)}
+.lside{position:absolute;right:30px;top:50%;transform:translateY(-50%);text-align:right;color:rgba(255,255,255,.5);letter-spacing:9px;font-weight:800;font-size:.85rem;line-height:2.1;z-index:2;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+@media(min-width:901px){.lside{right:max(30px,calc((100vw - var(--maxw))/2 + 30px))}}
+
+/* sections */
+.lsec{max-width:var(--maxw);margin:0 auto;padding:76px 28px;scroll-margin-top:64px}
+.lsec.alt{background:linear-gradient(180deg,rgba(142,22,38,.07),rgba(142,22,38,.02));border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:none;padding-left:max(28px,calc((100vw - var(--maxw))/2 + 28px));padding-right:max(28px,calc((100vw - var(--maxw))/2 + 28px))}
+.lsec h2{font-size:clamp(1.8rem,3.6vw,2.5rem);margin-bottom:10px;letter-spacing:-.5px}
+.lsecd{color:var(--muted);max-width:680px;margin-bottom:34px}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.lcard .em{font-size:1.5rem}
+.lcard b{display:block;margin:10px 0 6px;font-size:.95rem}
+.lcard p{font-size:.85rem;color:var(--muted)}
+.lchips{display:flex;flex-wrap:wrap;margin-bottom:26px}
+.lchips .chip{background:rgba(23,17,20,.55)}
+.lstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;max-width:640px}
+
+/* contact */
+.lcontact{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.lform label.f span{color:var(--text)}
+@media(max-width:760px){.lcontact{grid-template-columns:1fr}}
+
+/* footer */
+.lfoot{border-top:1px solid var(--line);padding:34px 24px 44px;text-align:center;color:var(--faint);font-size:.82rem}
+.lfoot p{margin-top:8px}
+
+/* responsive hero */
+@media(max-width:900px){
+  .lhero-in{grid-template-columns:1fr;min-height:0}
+  .lhero-img{position:absolute;inset:0;min-height:0;z-index:0}
+  .lhero-img::before{background:linear-gradient(180deg,rgba(11,15,20,.78) 0%,rgba(11,15,20,.62) 40%,rgba(11,15,20,.94) 100%)}
+  .lhero-txt{padding:64px 24px 54px}
+  .lside{display:none}
+  .lnav-in{padding:10px 14px}
+}
