@@ -5,6 +5,7 @@
 'use strict';
 
 const LSKEY='fitpulse_v1';
+const DEMO=window.FP_DEMO===true; // true only in the portable demo build
 let S=null;
 const fired=new Set();
 
@@ -32,6 +33,7 @@ function showLanding(){
   document.body.classList.add('landing-on');
   el('#landing').hidden=false;
   buildLandingTiers();
+  if(DEMO){const cta=el('.lcta');if(cta&&!el('.demopill'))cta.insertAdjacentHTML('beforebegin','<span class="pill warn demopill">DEMO</span>');}
   window.scrollTo(0,0);
 }
 function enterApp(){
@@ -97,6 +99,7 @@ function render(){
   if(isPro()){badge.style.display='';badge.textContent=S.sub.tier==='elite'?'ELITE':'PLUS';}
   else badge.style.display='none';
   el('#btn-pro').innerHTML=isPro()?'💎':'Go Pro';
+  const db=el('#demobadge');if(db)db.style.display=DEMO?'':'none';
   el('#sidepro').innerHTML=isPro()
     ?`<div class="tiny muted" style="padding:4px 6px">${S.sub.tier==='elite'?'💎 Elite active':'⚡ Plus active'} — thanks for supporting YazFit.</div>`
     :`<div class="tiny" style="padding:4px 6px"><b>⚡ Go Pro</b><br><span class="muted">Full programs, meal plans, reminders, AI coach — from $9.99/mo.</span><br><button class="btn sm accent" style="margin-top:8px;width:100%" data-act="open-paywall">See plans</button></div>`;
@@ -349,6 +352,7 @@ function paywallHTML(){
         :`<button class="btn wide ${p.pop?'accent':'primary'}" data-act="plan-pick" data-plan="${p.id}">${isPro()&&S.sub.tier===p.id?'Current plan':'Choose '+p.name}</button>`}
     </div>`).join('')}
   </div>
+  ${DEMO?'<div class="banner warn" style="margin-top:12px">🧪 Demo build — payments are simulated, nothing is charged.</div>':''}
   <div class="tiny faint" style="margin-top:12px">7-day free trial for new Pro users · cancel anytime in Profile → Subscription. Demo checkout — wire Stripe in production.</div>`;
 }
 function openPaywall(){openModal(paywallHTML());}
@@ -357,13 +361,14 @@ function checkoutHTML(tierId){
   const price=billing==='monthly'?'$'+p.pm+'/month':'$'+p.py+'/year';
   return `<div class="mhead"><h2>💳 Checkout — ${p.name}</h2><button class="x" data-act="modal-close">✕</button></div>
   <div class="banner info">${billing==='monthly'?'$'+p.pm+' per month':'$'+p.py+' per year (save '+Math.round((1-p.py/(p.pm*12))*100)+'%)'} · 7-day free trial first · cancel anytime</div>
+  ${DEMO?'<div class="banner warn">🧪 <b>Demo build</b> — no real payment is processed; any card values work.</div>':''}
   <label class="f"><span>Cardholder name</span><input class="in" id="cc-name" placeholder="As on card"></label>
   <label class="f"><span>Card number</span><input class="in" id="cc-num" inputmode="numeric" placeholder="4242 4242 4242 4242" maxlength="19"></label>
   <div class="inpair">
     <label class="f"><span>Expiry</span><input class="in" id="cc-exp" placeholder="MM/YY" maxlength="5"></label>
     <label class="f"><span>CVC</span><input class="in" id="cc-cvc" inputmode="numeric" placeholder="123" maxlength="4"></label>
   </div>
-  <button class="btn primary wide" data-act="checkout-confirm" data-plan="${tierId}">Start 7-day free trial — then ${price}</button>
+  <button class="btn primary wide" data-act="checkout-confirm" data-plan="${tierId}">${DEMO?'Activate (Demo)':'Start 7-day free trial — then '+price}</button>
   <div class="tiny faint" style="margin-top:10px">🔒 This is a demo form. No payment is processed and nothing is sent anywhere — in production, connect Stripe Elements / Apple Pay.</div>`;
 }
 
@@ -637,5 +642,6 @@ function init(){
   }
   setInterval(tickReminders,30000);
   setTimeout(tickReminders,2500);
+  if(DEMO)setTimeout(()=>toast('YazFit demo build — for preview only. Payments are simulated.','🧪'),1500);
 }
 init();
